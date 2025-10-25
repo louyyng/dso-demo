@@ -1,23 +1,28 @@
-# build-agent.yaml
-# This file defines the pod that Jenkins will use to run our pipeline steps.
-# It contains two containers (tools): one for Maven, and one for Kaniko.
+# build-agent.yaml (Updated with licensefinder tool)
 apiVersion: v1
 kind: Pod
 spec:
   containers:
     # Maven container for compiling, testing, and packaging the Java application
     - name: maven
-      image: maven:3.8-openjdk-11 # Using a specific version for stability
+      image: maven:3.8-openjdk-11
       command:
         - sleep
       args:
         - 99d
 
     # Kaniko container for building container images inside Kubernetes securely
-    # It does not require a Docker daemon.
     - name: kaniko
-      image: gcr.io/kaniko-project/executor:v1.9.0-debug # A recent and stable version of Kaniko
+      image: gcr.io/kaniko-project/executor:v1.9.0-debug
       imagePullPolicy: Always
+      command:
+        - sleep
+      args:
+        - 99d
+        
+    # License Finder container for checking software licenses
+    - name: licensefinder
+      image: licensefinder/license_finder:7.1.0
       command:
         - sleep
       args:
