@@ -1,4 +1,3 @@
-// Jenkinsfile (Corrected Version)
 pipeline {
     agent {
         kubernetes {
@@ -8,8 +7,7 @@ pipeline {
     }
 
     environment {
-        // Make sure this URI is correct!
-        ECR_REPO_URI = '123456789012.dkr.ecr.us-east-2.amazonaws.com/dso-demo' // <-- 記得換成你自己的 URI
+        ECR_REPO_URI = '751910243184.dkr.ecr.us-east-2.amazonaws.com/dso-demo' 
     }
 
     stages {
@@ -36,7 +34,6 @@ pipeline {
                 stage('Build and Push Image to ECR') {
                     steps {
                         container('kaniko') {
-                            // The script block fixes the "Expected a step" error
                             script {
                                 def imageTag = env.GIT_COMMIT.take(8)
                                 
