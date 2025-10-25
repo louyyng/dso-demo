@@ -1,6 +1,4 @@
-// Jenkinsfile (FINAL CORRECTED VERSION)
 pipeline {
-    // We added the serviceAccount line here to fix the ECR permission denied error
     agent {
         kubernetes {
             yamlFile 'build-agent.yaml'
@@ -21,9 +19,29 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                sh 'mvn test'
+        stage('Static Analysis') {
+            parallel {
+                stage('Unit Tests') {
+                    steps {
+                        sh 'mvn test'
+                    }
+                }
+
+                stage('SCA Security Scan') {
+                    steps {
+                        container('maven') {
+                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                sh 'mvn org.owasp:dependency-check-maven:check'
+                            }
+                        }
+                    }
+
+                    post {
+                        always {
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/dependency-check-report.html', fingerprint: true
+                        }
+                    }
+                }
             }
         }
 
