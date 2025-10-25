@@ -1,12 +1,16 @@
+// Jenkinsfile (FINAL CORRECTED VERSION)
 pipeline {
+    // We added the serviceAccount line here to fix the ECR permission denied error
     agent {
         kubernetes {
             yamlFile 'build-agent.yaml'
             defaultContainer 'maven'
+            serviceAccount 'jenkins'
         }
     }
 
     environment {
+
         ECR_REPO_URI = '751910243184.dkr.ecr.us-east-2.amazonaws.com/dso-demo' 
     }
 
