@@ -1,45 +1,24 @@
+# build-agent.yaml
+# This file defines the pod that Jenkins will use to run our pipeline steps.
+# It contains two containers (tools): one for Maven, and one for Kaniko.
 apiVersion: v1
 kind: Pod
-metadata:
-  labels:
-    app: spring-build-ci
 spec:
   containers:
+    # Maven container for compiling, testing, and packaging the Java application
     - name: maven
-      image: maven:alpine
+      image: maven:3.8-openjdk-11 # Using a specific version for stability
       command:
-        - cat
-      tty: true
-      volumeMounts:
-        - name: m2
-          mountPath: /root/.m2/
-    - name: docker-tools
-      image: rmkanda/docker-tools:latest
+        - sleep
+      args:
+        - 99d
+
+    # Kaniko container for building container images inside Kubernetes securely
+    # It does not require a Docker daemon.
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:v1.9.0-debug # A recent and stable version of Kaniko
+      imagePullPolicy: Always
       command:
-        - cat
-      tty: true
-      volumeMounts:
-        - mountPath: /var/run
-          name: docker-sock
-        - mountPath: /tmp/trivycache/
-          name: trivycache
-    - name: trufflehog
-      image: rmkanda/trufflehog
-      command:
-        - cat
-      tty: true
-    - name: licensefinder
-      image: licensefinder/license_finder
-      command:
-        - cat
-      tty: true
-  volumes:
-    - name: m2
-      hostPath:
-        path: /tmp/.m2/
-    - name: docker-sock
-      hostPath:
-        path: /var/run
-    - name: trivycache
-      hostPath:
-        path: /tmp/trivycache/
+        - sleep
+      args:
+        - 99d
