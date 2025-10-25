@@ -12,7 +12,7 @@ pipeline {
     environment {
         // !!! IMPORTANT !!!
         // Replace the value below with the ECR Repository URI you copied earlier.
-        ECR_REPO_URI = 'ACCOUNT_ID.dkr.ecr.us-east-2.amazonaws.com/dso-demo'
+        ECR_REPO_URI = '751910243184.dkr.ecr.us-east-2.amazonaws.com/dso-demo'
     }
 
     stages {
